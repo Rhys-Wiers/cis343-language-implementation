@@ -76,7 +76,7 @@ void Scanner::scan_string() {
 	}
 
 	if (is_at_end()) {
-		report_error(line_, "Unterminated string.");
+		report_error(line_, "Unterminated string");
 		return;
 	}
 
@@ -170,6 +170,16 @@ void Scanner::scan_token() {
 		if (match('/')) {
 			while (peek() != '\n' && !is_at_end())
 				advance();
+		} else if (match('*')) {
+			while (peek() != '*' && peek_next() != '/' && !is_at_end()) {
+				if (peek() == '\n')
+					++line_;
+				advance();
+			}
+			if (!is_at_end()) {
+				advance();
+				advance();
+			}
 		} else {
 			add_token(TokenType::Slash);
 		}

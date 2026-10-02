@@ -1,60 +1,85 @@
+#include "error.h"
+#include "scanner.h"
+#include "token.h"
+// #include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <signal.h>
+#include <iterator>
+// #include <ratio>
+// #include <signal.h>
 #include <string>
 #include <unistd.h>
+#include <vector>
 
-extern "C" {
-#include <readline/readline.h>
-}
-
-// signal handler to detect ctrl+c
+/* signal handler to detect ctrl+c
 void signal_handler(int signum) {
 	if (signum == SIGINT) {
 		const char msg[] = "\nEscape character detected. Exiting...\n";
 		write(STDOUT_FILENO, msg, sizeof(msg) - 1);
 		_exit(0);
 	}
-}
+} */
+void run(std::string &source) {
+	Scanner scanner(source);
 
-void enter_repl() {
-	// register signal handler for ctrl+c
-	signal(SIGINT, signal_handler);
-
-	// enter REPL mode
-	char *raw_input;
-
-	// read input
-	while ((raw_input = readline("> ")) != nullptr) {
-
-		std::string input(raw_input);
-		free(raw_input);
-
-		// echo input
-		std::cout << "Your input was: " << input << '\n';
-		std::cerr << "Error: Scanner not implemented." << '\n';
+	std::vector<Token> tokens = scanner.scan_tokens();
+	for (const Token &token : tokens) {
+		std::cout << to_string(token.type) << " " << token.lexeme << " "
+				  << to_string(token.literal) << "\n";
 	}
 }
 
-void run_file(char *file) {
+int run_file(char *file) {
 	// locate file
 	std::ifstream my_file(file);
 
 	// check that it opened
 	if (!my_file.is_open()) {
 		std::cerr << "Error: Could not open the file." << '\n';
-		return;
+		return 66; // return exit code that indicates the error that occurred
 	}
 
-	std::string line;
+	// read whole file
+	// start AI code
+	std::string content((std::istreambuf_iterator<char>(my_file)),
+						std::istreambuf_iterator<char>());
+	// end AI code
 
-	// read each line
-	while (std::getline(my_file, line)) {
-		std::cout << line << std::endl;
+	Scanner scanner(content);
+	std::vector<Token> tokens = scanner.scan_tokens();
+	for (const Token &token : tokens) {
+		std::cout << to_string(token.type) << " " << token.lexeme << " "
+				  << to_string(token.literal) << "\n";
 	}
 
 	my_file.close();
-	std::cerr << "Error: Scanner not implemented." << '\n';
+	// std::cerr << "Error: Scanner not implemented." << '\n';
+	return 0;
+}
+
+void enter_repl() {
+	// register signal handler for ctrl+c
+	// signal(SIGINT, signal_handler);
+
+	// enter REPL mode
+
+	std::string line;
+
+	// read input
+	while (true) {
+		std::cout << "> " << std::flush;
+		if (!std::getline(std::cin, line)) {
+			std::cout << '\n';
+			break;
+		}
+
+		run(line);
+		reset_error();
+
+		// echo input
+		// std::cout << "Your input was: " << input << '\n';
+		// std::cerr << "Error: Scanner not implemented." << '\n';
+	}
 }
 
 int main(int argc, char *argv[]) {
