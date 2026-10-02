@@ -32,18 +32,17 @@ enum class TokenType {
 	Identifier,
 
 	// keywords
-	AND,
-	CLASS,
-	ELSE,
-	FALSE,
-	FOR,
-	IF,
-	NIL,
-	OR,
-	PRINT,
-	RETURN,
-	TRUE,
-	WHILE,
+	And,
+	Class,
+	Else,
+	False,
+	For,
+	If,
+	Nil,
+	Or,
+	Return,
+	True,
+	While,
 
 	EoF
 };
@@ -56,3 +55,6 @@ struct Token {
 	Literal literal;
 	int line;
 };
+
+std::string to_string(TokenType type);
+std::string to_string(const Literal &literal);

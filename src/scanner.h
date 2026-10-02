@@ -16,12 +16,14 @@ class Scanner {
 	std::string source_;
 	std::vector<Token> tokens_;
 	void scan_token();
+	void add_token(TokenType);
 	void add_token(TokenType, Literal);
 	char advance();
-	char peek();
-	char peek_next();
-	void string();
-	void number();
+	const char peek();
+	const char peek_next();
+	void scan_string();
+	void scan_number();
+	void scan_identifier();
 	bool is_at_end() const;
 	bool match(char);
 };
