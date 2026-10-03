@@ -1,0 +1,6 @@
+( ) { } , . + - * / ; && || %
+! != = == < <= > >=
+123
+"hello"
+identifier
+class else false for if nil return true while

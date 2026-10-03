@@ -2,14 +2,14 @@
 #include "error.h"
 #include "token.h"
 #include <cctype>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 
 static std::unordered_map<std::string, TokenType> keywords = {
-	{"and", TokenType::And},	   {"class", TokenType::Class},
-	{"else", TokenType::Else},	   {"false", TokenType::False},
-	{"for", TokenType::For},	   {"if", TokenType::If},
-	{"nil", TokenType::Nil},	   {"or", TokenType::Or},
+	{"class", TokenType::Class},   {"else", TokenType::Else},
+	{"false", TokenType::False},   {"for", TokenType::For},
+	{"if", TokenType::If},		   {"nil", TokenType::Nil},
 	{"return", TokenType::Return}, {"true", TokenType::True},
 	{"while", TokenType::While},
 };
@@ -76,7 +76,7 @@ void Scanner::scan_string() {
 	}
 
 	if (is_at_end()) {
-		report_error(line_, "Unterminated string");
+		report_error(line_, "Unterminated string.");
 		return;
 	}
 
@@ -92,26 +92,40 @@ void Scanner::scan_number() {
 
 	if (peek() == '.' && is_digit(peek_next())) {
 		advance();
-
 		while (is_digit(peek()))
 			advance();
 	}
+	if (peek() == 'e' || peek() == 'E') {
+		advance();
+		if (peek() == '+' || peek() == '-')
+			advance();
+		if (!is_digit(peek())) {
+			report_error(line_, "Malformed exponent in number.");
+			return;
+		}
+		while (is_digit(peek())) {
+			advance();
+		}
+	}
 
 	std::string text = source_.substr(start_, current_ - start_);
-	double value = std::stod(text);
-	add_token(TokenType::Number, value);
+	try {
+		add_token(TokenType::Number, std::stod(text));
+	} catch (const std::out_of_range &) {
+		report_error(line_, "Number literal too large.");
+	}
 }
 
 void Scanner::scan_identifier() {
 	while (is_alphanumeric(peek()))
 		advance();
 
-	// begin AI code
+	// --- start AI code ---
 	std::string text = source_.substr(start_, current_ - start_);
 	auto found = keywords.find(text);
 	TokenType type =
 		(found != keywords.end()) ? found->second : TokenType::Identifier;
-	// end AI code
+	// --- end AI code ---
 
 	add_token(type);
 }
@@ -165,13 +179,16 @@ void Scanner::scan_token() {
 	case '>':
 		add_token(match('=') ? TokenType::GreaterEqual : TokenType::Greater);
 		break;
+	case ':':
+		add_token(TokenType::Colon);
+		break;
+	case '%':
+		add_token(TokenType::Remainder);
+		break;
 	case '/':
 		// check if it's a comment
-		if (match('/')) {
-			while (peek() != '\n' && !is_at_end())
-				advance();
-		} else if (match('*')) {
-			while (peek() != '*' && peek_next() != '/' && !is_at_end()) {
+		if (match('#')) {
+			while (peek() != '#' && peek_next() != '/' && !is_at_end()) {
 				if (peek() == '\n')
 					++line_;
 				advance();
@@ -179,15 +196,35 @@ void Scanner::scan_token() {
 			if (!is_at_end()) {
 				advance();
 				advance();
+			} else {
+				report_error(line_, "Unterminated multiline comment.");
 			}
 		} else {
 			add_token(TokenType::Slash);
 		}
 		break;
+	case '#':
+		while (peek() != '\n' && !is_at_end()) {
+			advance();
+		}
+		break;
 	case '"':
 		scan_string();
 		break;
-
+	case '&':
+		if (match('&')) {
+			add_token(TokenType::Ampersands);
+		} else {
+			report_error(line_, "Unexpected '&'. Did you mean '&&'?");
+		}
+		break;
+	case '|':
+		if (match('|')) {
+			add_token(TokenType::Verts);
+		} else {
+			report_error(line_, "Unexpected '|'. Did you mean '||'?");
+		}
+		break;
 	// skip whitespace
 	case ' ':
 	case '\r':
@@ -206,7 +243,7 @@ void Scanner::scan_token() {
 		} else if (is_alpha(c)) {
 			scan_identifier();
 		} else {
-			report_error(line_, "Unexpected Character");
+			report_error(line_, "Unexpected Character.");
 		}
 		break;
 	}

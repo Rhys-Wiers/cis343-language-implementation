@@ -1,0 +1,13 @@
+BANG ! null
+BANG_EQUAL != null
+EQUAL = null
+EQUAL_EQUAL == null
+LESS < null
+LESS_EQUAL <= null
+GREATER > null
+GREATER_EQUAL >= null
+PLUS + null
+MINUS - null
+STAR * null
+SLASH / null
+EOF  null

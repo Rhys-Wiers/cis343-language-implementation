@@ -1,0 +1,12 @@
+foo
+bar
+_
+_foo
+foo_
+foo123
+abc123xyz
+ABC
+ABC123
+snake_case
+CamelCase
+__hello__

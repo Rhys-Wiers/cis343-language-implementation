@@ -1,0 +1,13 @@
+IDENTIFIER foo null
+IDENTIFIER bar null
+IDENTIFIER _ null
+IDENTIFIER _foo null
+IDENTIFIER foo_ null
+IDENTIFIER foo123 null
+IDENTIFIER abc123xyz null
+IDENTIFIER ABC null
+IDENTIFIER ABC123 null
+IDENTIFIER snake_case null
+IDENTIFIER CamelCase null
+IDENTIFIER __hello__ null
+EOF  null

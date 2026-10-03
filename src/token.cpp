@@ -1,4 +1,5 @@
 #include "token.h"
+#include <iomanip>
 #include <sstream>
 
 std::string to_string(TokenType type) {
@@ -25,6 +26,10 @@ std::string to_string(TokenType type) {
 		return "SLASH";
 	case TokenType::SemiColon:
 		return "SEMI_COLON";
+	case TokenType::Colon:
+		return "COLON";
+	case TokenType::Remainder:
+		return "REMAINDER";
 	case TokenType::Bang:
 		return "BANG";
 	case TokenType::Equal:
@@ -41,14 +46,16 @@ std::string to_string(TokenType type) {
 		return "LESS_EQUAL";
 	case TokenType::GreaterEqual:
 		return "GREATER_EQUAL";
+	case TokenType::Ampersands:
+		return "AMPERSANDS";
+	case TokenType::Verts:
+		return "VERTS";
 	case TokenType::Number:
 		return "NUMBER";
 	case TokenType::String:
 		return "STRING";
 	case TokenType::Identifier:
 		return "IDENTIFIER";
-	case TokenType::And:
-		return "AND";
 	case TokenType::Class:
 		return "CLASS";
 	case TokenType::Else:
@@ -61,8 +68,6 @@ std::string to_string(TokenType type) {
 		return "IF";
 	case TokenType::Nil:
 		return "NIL";
-	case TokenType::Or:
-		return "OR";
 	case TokenType::Return:
 		return "RETURN";
 	case TokenType::True:
@@ -80,7 +85,7 @@ std::string to_string(TokenType type) {
 std::string to_string(const Literal &literal) {
 	if (std::holds_alternative<double>(literal)) {
 		std::ostringstream out;
-		out << std::get<double>(literal);
+		out << std::setprecision(15) << std::get<double>(literal);
 		std::string text = out.str();
 		// print 3 as 3.0, but leave 3.14 and 1e+21 alone
 		if (text.find_first_of(".eEni") == std::string::npos) {

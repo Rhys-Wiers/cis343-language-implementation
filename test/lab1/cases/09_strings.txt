@@ -1,0 +1,8 @@
+"hello"
+"hello world"
+""
+"123"
+"true"
+"hello123"
+"hello, world!"
+"special characters: ! @ # $ %"

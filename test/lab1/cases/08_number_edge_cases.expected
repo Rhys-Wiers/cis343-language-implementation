@@ -1,0 +1,16 @@
+NUMBER 123 123.0
+DOT . null
+DOT . null
+NUMBER 123 123.0
+NUMBER 1.2 1.2
+DOT . null
+NUMBER 3 3.0
+NUMBER 1 1.0
+DOT . null
+DOT . null
+NUMBER 2 2.0
+NUMBER 0 0.0
+DOT . null
+NUMBER 0.0 0.0
+NUMBER 1.00 1.0
+EOF  null

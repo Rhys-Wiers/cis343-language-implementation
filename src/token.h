@@ -15,6 +15,8 @@ enum class TokenType {
 	Star,
 	Slash,
 	SemiColon,
+	Colon,
+	Remainder,
 
 	// one or two char
 	Bang,
@@ -25,6 +27,8 @@ enum class TokenType {
 	BangEqual,
 	LessEqual,
 	GreaterEqual,
+	Ampersands,
+	Verts,
 
 	// literals
 	Number,
@@ -32,14 +36,12 @@ enum class TokenType {
 	Identifier,
 
 	// keywords
-	And,
 	Class,
 	Else,
 	False,
 	For,
 	If,
 	Nil,
-	Or,
 	Return,
 	True,
 	While,

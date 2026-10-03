@@ -1,0 +1,9 @@
+STRING "hello" hello
+STRING "hello world" hello world
+STRING "" 
+STRING "123" 123
+STRING "true" true
+STRING "hello123" hello123
+STRING "hello, world!" hello, world!
+STRING "special characters: ! @ # $ %" special characters: ! @ # $ %
+EOF  null
