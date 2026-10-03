@@ -1,0 +1,5 @@
+# just a comment
+x # trailing comment
+/# block #/ y
+/# never closed
+z

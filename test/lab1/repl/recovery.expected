@@ -1,0 +1,10 @@
+IDENTIFIER x null
+EQUAL = null
+NUMBER 1 1.0
+EOF  null
+[line 1] Error: Unexpected Character.
+EOF  null
+IDENTIFIER y null
+EQUAL = null
+NUMBER 2 2.0
+EOF  null

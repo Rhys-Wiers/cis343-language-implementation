@@ -1,24 +1,13 @@
 #include "error.h"
 #include "scanner.h"
 #include "token.h"
-// #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <iterator>
-// #include <ratio>
-// #include <signal.h>
 #include <string>
 #include <unistd.h>
 #include <vector>
 
-/* signal handler to detect ctrl+c
-void signal_handler(int signum) {
-	if (signum == SIGINT) {
-		const char msg[] = "\nEscape character detected. Exiting...\n";
-		write(STDOUT_FILENO, msg, sizeof(msg) - 1);
-		_exit(0);
-	}
-} */
 void run(std::string &source) {
 	Scanner scanner(source);
 
@@ -53,32 +42,28 @@ int run_file(char *file) {
 	}
 
 	my_file.close();
-	// std::cerr << "Error: Scanner not implemented." << '\n';
 	return 0;
 }
 
 void enter_repl() {
-	// register signal handler for ctrl+c
-	// signal(SIGINT, signal_handler);
-
 	// enter REPL mode
+	bool interactive = isatty(STDIN_FILENO);
 
 	std::string line;
 
 	// read input
 	while (true) {
-		std::cout << "> " << std::flush;
+		if (interactive)
+			std::cout << "> " << std::flush;
 		if (!std::getline(std::cin, line)) {
-			std::cout << '\n';
+			if (interactive)
+				std::cout << '\n';
 			break;
 		}
 
 		run(line);
+		std::cout << std::flush;
 		reset_error();
-
-		// echo input
-		// std::cout << "Your input was: " << input << '\n';
-		// std::cerr << "Error: Scanner not implemented." << '\n';
 	}
 }
 

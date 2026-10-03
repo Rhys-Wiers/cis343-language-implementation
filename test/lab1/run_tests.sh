@@ -4,7 +4,7 @@
 # Usage: ./test/lab1/run_tests.sh [path-to-binary]
 # Optional per-test file: NAME.code containing the expected exit code.
 
-BIN="${1:-build/myinterp}"
+BIN="${1:-build/hashbrown}"
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
 if [ ! -x "$BIN" ]; then

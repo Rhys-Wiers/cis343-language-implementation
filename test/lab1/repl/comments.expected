@@ -1,0 +1,9 @@
+EOF  null
+IDENTIFIER x null
+EOF  null
+IDENTIFIER y null
+EOF  null
+[line 1] Error: Unterminated multiline comment.
+EOF  null
+IDENTIFIER z null
+EOF  null

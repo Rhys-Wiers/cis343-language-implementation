@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/rhys/desktop/school/cis343/language-implementation/src
+CXX_INCLUDES = -I/home/rhys/desktop/school/cis343/hashbrown-implementation/src
 
 CXX_FLAGS = -std=gnu++17
 

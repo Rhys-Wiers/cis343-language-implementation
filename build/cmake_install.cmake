@@ -1,4 +1,4 @@
-# Install script for directory: /home/rhys/desktop/school/cis343/language-implementation
+# Install script for directory: /home/rhys/desktop/school/cis343/hashbrown-implementation
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,7 +45,7 @@ endif()
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/home/rhys/desktop/school/cis343/language-implementation/build/install_local_manifest.txt"
+  file(WRITE "/home/rhys/desktop/school/cis343/hashbrown-implementation/build/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
 if(CMAKE_INSTALL_COMPONENT)
@@ -61,6 +61,6 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/home/rhys/desktop/school/cis343/language-implementation/build/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "/home/rhys/desktop/school/cis343/hashbrown-implementation/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

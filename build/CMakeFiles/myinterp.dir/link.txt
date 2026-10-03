@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/myinterp.dir/link.d CMakeFiles/myinterp.dir/src/main.cpp.o CMakeFiles/myinterp.dir/src/scanner.cpp.o CMakeFiles/myinterp.dir/src/token.cpp.o CMakeFiles/myinterp.dir/src/error.cpp.o -o myinterp

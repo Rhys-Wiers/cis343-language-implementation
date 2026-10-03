@@ -1,0 +1,8 @@
+NUMBER 1e5 100000.0
+EOF  null
+NUMBER 1.5E-3 0.0015
+EOF  null
+[line 1] Error: Malformed exponent in number.
+EOF  null
+IDENTIFIER x null
+EOF  null

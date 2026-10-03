@@ -1,2 +1,2 @@
-# Empty dependencies file for myinterp.
+# Empty dependencies file for hashbrown.
 # This may be replaced when dependencies are built.

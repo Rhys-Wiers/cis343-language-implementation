@@ -1,11 +1,11 @@
-myinterp: \
+hashbrown: \
   /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/Scrt1.o \
   /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crti.o \
   /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o \
-  CMakeFiles/myinterp.dir/src/main.cpp.o \
-  CMakeFiles/myinterp.dir/src/scanner.cpp.o \
-  CMakeFiles/myinterp.dir/src/token.cpp.o \
-  CMakeFiles/myinterp.dir/src/error.cpp.o \
+  CMakeFiles/hashbrown.dir/src/main.cpp.o \
+  CMakeFiles/hashbrown.dir/src/scanner.cpp.o \
+  CMakeFiles/hashbrown.dir/src/token.cpp.o \
+  CMakeFiles/hashbrown.dir/src/error.cpp.o \
   /usr/lib/gcc/x86_64-pc-linux-gnu/16/libstdc++.so \
   /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libm.so \
   /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libm.so \
@@ -44,13 +44,13 @@ myinterp: \
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o:
 
-CMakeFiles/myinterp.dir/src/main.cpp.o:
+CMakeFiles/hashbrown.dir/src/main.cpp.o:
 
-CMakeFiles/myinterp.dir/src/scanner.cpp.o:
+CMakeFiles/hashbrown.dir/src/scanner.cpp.o:
 
-CMakeFiles/myinterp.dir/src/token.cpp.o:
+CMakeFiles/hashbrown.dir/src/token.cpp.o:
 
-CMakeFiles/myinterp.dir/src/error.cpp.o:
+CMakeFiles/hashbrown.dir/src/error.cpp.o:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/16/libstdc++.so:
 

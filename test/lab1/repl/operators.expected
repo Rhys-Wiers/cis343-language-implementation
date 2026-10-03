@@ -1,0 +1,18 @@
+NUMBER 10 10.0
+REMAINDER % null
+NUMBER 3 3.0
+EOF  null
+IDENTIFIER a null
+AMPERSANDS && null
+IDENTIFIER b null
+VERTS || null
+IDENTIFIER c null
+EOF  null
+[line 1] Error: Unexpected '&'. Did you mean '&&'?
+IDENTIFIER a null
+IDENTIFIER b null
+EOF  null
+[line 1] Error: Unexpected '|'. Did you mean '||'?
+IDENTIFIER a null
+IDENTIFIER b null
+EOF  null
