@@ -1,0 +1,58 @@
+# ---------- CMake / build output ----------
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
+CTestTestfile.cmake
+Testing/
+
+# ---------- C++ compiled output ----------
+*.o
+*.obj
+*.a
+*.so
+*.out
+*.exe
+*.gch
+
+# Test executables built by hand
+ast_test
+ast-test
+
+# ---------- LaTeX (latexmk / xelatex / minted) ----------
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.xdv
+*.nav
+*.snm
+*.vrb
+_minted*/
+*.pyg
+*.config.minted
+
+# Keep the PDF? Remove the next line if the report PDF should be committed.
+# *.pdf
+
+# ---------- Editors / OS ----------
+.cache/
+.clangd/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
