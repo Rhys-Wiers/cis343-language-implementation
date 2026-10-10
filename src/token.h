@@ -49,7 +49,7 @@ enum class TokenType {
 	EoF
 };
 
-using Literal = std::variant<std::monostate, double, std::string>;
+using Literal = std::variant<std::monostate, double, std::string, bool>;
 
 struct Token {
 	TokenType type;

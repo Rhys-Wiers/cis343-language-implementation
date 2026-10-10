@@ -1,0 +1,132 @@
+\documentclass[12pt]{article} 
+
+\usepackage{amsmath,amsthm,amssymb,hyperref}
+\usepackage{geometry}
+\usepackage{verbatim}
+\usepackage{minted}
+\setminted{
+  fontsize=\small,
+  linenos,
+  breaklines,
+  frame=lines,
+  bgcolor=codebg,
+  style=friendly
+}
+
+\usepackage{xcolor}
+\definecolor{codebg}{HTML}{F7F7F7}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue}
+    
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{conjecture}{Conjecture}
+\newtheorem*{lemma`}{Lemma}
+\newtheorem*{corollary}{Corollary}
+\newtheorem*{proposition}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem*{defn}{Definition}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\term}[1]{\texttt{"#1"}}
+\newcommand{\nt}[1]{\text{#1}}
+
+% --- Main Document Body ---
+\begin{document}
+    \noindent
+    Rhys Wiers\\
+    CIS 343\\
+    Dr. Haoyu Li\\
+    \today
+
+    \begin{center}
+        {\Large \textbf{Lab 2: AST Printer}}
+    \end{center}
+
+    \begin{enumerate}
+        \item \textbf{Grammar:}
+            \begin{equation*}
+            \begin{array}{lcl}
+            \nt{expression} & \rightarrow & \nt{logic\_or} \\[4pt]
+            \nt{logic\_or}  & \rightarrow & \nt{logic\_and}\ \left(\,\term{\textbar\textbar}\ \nt{logic\_and}\,\right)* \\[4pt]
+            \nt{logic\_and} & \rightarrow & \nt{equality}\ \left(\,\term{\&\&}\ \nt{equality}\,\right)* \\[4pt]
+            \nt{equality}   & \rightarrow & \nt{comparison}\ \left(\,(\term{!=} \mid \term{==})\ \nt{comparison}\,\right)* \\[4pt]
+            \nt{comparison} & \rightarrow & \nt{term}\ \left(\,(\term{>} \mid \term{>=} \mid \term{<} \mid \term{<=})\ \nt{term}\,\right)* \\[4pt]
+            \nt{term}       & \rightarrow & \nt{factor}\ \left(\,(\term{-} \mid \term{+})\ \nt{factor}\,\right)* \\[4pt]
+            \nt{factor}     & \rightarrow & \nt{unary}\ \left(\,(\term{/} \mid \term{*} \mid \term{\%})\ \nt{unary}\,\right)* \\[4pt]
+            \nt{unary}      & \rightarrow & (\term{!} \mid \term{-})\ \nt{unary} \mid \nt{primary} \\[4pt]
+            \nt{primary}    & \rightarrow & \texttt{NUMBER} \mid \texttt{STRING} \mid \term{true} \mid \term{false} \mid \term{nil} \\
+                            &             & \mid\ \term{(}\ \nt{expression}\ \term{)}
+            \end{array}
+            \end{equation*}
+
+            Since my language uses ``\&\&" and ``||", I have included those in the grammar above. In addition, I have included ``\%".
+        \item \textbf{Printer Testing:}
+            From the project root, you can run the following to compile the printer and the tests:
+            \begin{minted}{bash}
+g++ -std=c++17 -Wall -Wextra src/token.cpp \
+src/ast-printer.cpp test/lab2/ast-test.cpp \
+-o ast-test
+            \end{minted}
+
+            Then you can run the executable:
+            \begin{minted}{bash}
+./ast-test
+            \end{minted}
+
+        \item \textbf{Test Cases:}
+            The test cases cover all literal values (numbers, strings, booleans, nil), all the unary operators, binary operators, comparisons, ``\&\&" and ``||", and larger arithmetic and logic expressions that use multiple different operators. In the interest of time, I used AI to generate the test cases.
+
+            Here is the output from the test cases:
+
+            \begin{minted}{bash}
+./ast_test
+PASS literal number
+  expected: 42
+  actual:   42
+PASS literal string
+  expected: hi
+  actual:   hi
+PASS literal true
+  expected: true
+  actual:   true
+PASS literal false
+  expected: false
+  actual:   false
+PASS literal nil
+  expected: nil
+  actual:   nil
+PASS unary minus
+  expected: (- 3)
+  actual:   (- 3)
+PASS unary bang
+  expected: (! true)
+  actual:   (! true)
+PASS nested unary
+  expected: (! (! false))
+  actual:   (! (! false))
+PASS arithmetic
+  expected: (- (+ 1 (* 2 3)) (% (/ 4 5) 6))
+  actual:   (- (+ 1 (* 2 3)) (% (/ 4 5) 6))
+PASS assignment example
+  expected: (* (- 123) (group 45.67))
+  actual:   (* (- 123) (group 45.67))
+PASS logic
+  expected: (|| (&& (== (< 1 2) true) (!= (>= 3 4) nil)) (group (&& (<= 5 6) (> 7 8))))
+  actual:   (|| (&& (== (< 1 2) true) (!= (>= 3 4) nil)) (group (&& (<= 5 6) (> 7 8))))
+
+All tests passed.
+            \end{minted}
+                        
+
+    \end{enumerate}
+
+\end{document}
