@@ -1,5 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/hashbrown.dir/link.d"
+  "CMakeFiles/hashbrown.dir/src/ast-printer.cpp.o"
+  "CMakeFiles/hashbrown.dir/src/ast-printer.cpp.o.d"
   "CMakeFiles/hashbrown.dir/src/error.cpp.o"
   "CMakeFiles/hashbrown.dir/src/error.cpp.o.d"
   "CMakeFiles/hashbrown.dir/src/main.cpp.o"

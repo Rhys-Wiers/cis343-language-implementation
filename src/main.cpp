@@ -1,4 +1,6 @@
+#include "ast-printer.h"
 #include "error.h"
+#include "parser.h"
 #include "scanner.h"
 #include "token.h"
 #include <fstream>
@@ -11,11 +13,16 @@
 void run(std::string &source) {
 	Scanner scanner(source);
 
-	std::vector<Token> tokens = scanner.scan_tokens();
-	for (const Token &token : tokens) {
+	Parser parser(scanner.scan_tokens());
+	ExprPtr expr = parser.parse();
+	if (parser.had_error() || !expr)
+		return;
+	std::cout << AstPrinter().print(*expr) << '\n';
+
+	/* for (const Token &token : tokens) {
 		std::cout << to_string(token.type) << " " << token.lexeme << " "
 				  << to_string(token.literal) << "\n";
-	}
+	}*/
 }
 
 int run_file(char *file) {
@@ -30,16 +37,22 @@ int run_file(char *file) {
 
 	// read whole file
 	// start AI code
-	std::string content((std::istreambuf_iterator<char>(my_file)),
-						std::istreambuf_iterator<char>());
+	std::string content((std::istreambuf_iterator<char>(my_file)), std::istreambuf_iterator<char>());
 	// end AI code
 
 	Scanner scanner(content);
+	Parser parser(scanner.scan_tokens());
+	ExprPtr expr = parser.parse();
+	if (parser.had_error() || !expr)
+		return 1;
+	std::cout << AstPrinter().print(*expr) << '\n';
+	/*
 	std::vector<Token> tokens = scanner.scan_tokens();
 	for (const Token &token : tokens) {
 		std::cout << to_string(token.type) << " " << token.lexeme << " "
 				  << to_string(token.literal) << "\n";
 	}
+	*/
 
 	my_file.close();
 	return 0;

@@ -7,10 +7,14 @@
 #include <unordered_map>
 
 static std::unordered_map<std::string, TokenType> keywords = {
-	{"class", TokenType::Class},   {"else", TokenType::Else},
-	{"false", TokenType::False},   {"for", TokenType::For},
-	{"if", TokenType::If},		   {"nil", TokenType::Nil},
-	{"return", TokenType::Return}, {"true", TokenType::True},
+	{"class", TokenType::Class},
+	{"else", TokenType::Else},
+	{"false", TokenType::False},
+	{"for", TokenType::For},
+	{"if", TokenType::If},
+	{"nil", TokenType::Nil},
+	{"return", TokenType::Return},
+	{"true", TokenType::True},
 	{"while", TokenType::While},
 };
 

@@ -10,8 +10,7 @@ std::string AstPrinter::print(const Expr &expression) {
 
 std::string AstPrinter::visit_binary(const BinaryExpr &expression) {
 	// parenthesize using the operator's lexeme and both children
-	std::vector<const Expr *> children = {expression.left.get(),
-										  expression.right.get()};
+	std::vector<const Expr *> children = {expression.left.get(), expression.right.get()};
 	return parenthesize(expression.op.lexeme, children);
 }
 
@@ -52,9 +51,7 @@ std::string AstPrinter::visit_literal(const LiteralExpr &expression) {
 // ------------------ End AI code ---------------------
 
 // my formatter breaks this line weirdly but it works
-std::string
-AstPrinter::parenthesize(const std::string &name,
-						 const std::vector<const Expr *> &children) {
+std::string AstPrinter::parenthesize(const std::string &name, const std::vector<const Expr *> &children) {
 	// build string with "(name child1 child2)" format
 	std::string str = "(" + name;
 	// call accept of each child

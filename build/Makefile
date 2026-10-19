@@ -129,6 +129,30 @@ hashbrown/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hashbrown.dir/build.make CMakeFiles/hashbrown.dir/build
 .PHONY : hashbrown/fast
 
+src/ast-printer.o: src/ast-printer.cpp.o
+.PHONY : src/ast-printer.o
+
+# target to build an object file
+src/ast-printer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hashbrown.dir/build.make CMakeFiles/hashbrown.dir/src/ast-printer.cpp.o
+.PHONY : src/ast-printer.cpp.o
+
+src/ast-printer.i: src/ast-printer.cpp.i
+.PHONY : src/ast-printer.i
+
+# target to preprocess a source file
+src/ast-printer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hashbrown.dir/build.make CMakeFiles/hashbrown.dir/src/ast-printer.cpp.i
+.PHONY : src/ast-printer.cpp.i
+
+src/ast-printer.s: src/ast-printer.cpp.s
+.PHONY : src/ast-printer.s
+
+# target to generate assembly for a file
+src/ast-printer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hashbrown.dir/build.make CMakeFiles/hashbrown.dir/src/ast-printer.cpp.s
+.PHONY : src/ast-printer.cpp.s
+
 src/error.o: src/error.cpp.o
 .PHONY : src/error.o
 
@@ -234,6 +258,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... hashbrown"
+	@echo "... src/ast-printer.o"
+	@echo "... src/ast-printer.i"
+	@echo "... src/ast-printer.s"
 	@echo "... src/error.o"
 	@echo "... src/error.i"
 	@echo "... src/error.s"

@@ -28,8 +28,7 @@ struct BinaryExpr : Expr {
 	ExprPtr left;
 	Token op;
 	ExprPtr right;
-	BinaryExpr(ExprPtr l, Token o, ExprPtr r)
-		: left(std::move(l)), op(std::move(o)), right(std::move(r)) {}
+	BinaryExpr(ExprPtr l, Token o, ExprPtr r) : left(std::move(l)), op(std::move(o)), right(std::move(r)) {}
 	std::string accept(Visitor &v) const override {
 		return v.visit_binary(*this);
 	}

@@ -16,6 +16,5 @@ class AstPrinter : public Visitor {
 
   private:
 	// shared helper: "(" + name + " " + each child's printed form + ")"
-	std::string parenthesize(const std::string &name,
-							 const std::vector<const Expr *> &children);
+	std::string parenthesize(const std::string &name, const std::vector<const Expr *> &children);
 };
