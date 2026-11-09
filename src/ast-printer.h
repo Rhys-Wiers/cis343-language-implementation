@@ -9,12 +9,13 @@ class AstPrinter : public Visitor {
 	std::string print(const Expr &expr);
 
 	// one override per node type, matching Visitor exactly
-	std::string visit_binary(const BinaryExpr &expr) override;
-	std::string visit_unary(const UnaryExpr &expr) override;
-	std::string visit_literal(const LiteralExpr &expr) override;
-	std::string visit_grouping(const GroupingExpr &expr) override;
+	Value visit_binary(const BinaryExpr &expr) override;
+	Value visit_unary(const UnaryExpr &expr) override;
+	Value visit_literal(const LiteralExpr &expr) override;
+	Value visit_grouping(const GroupingExpr &expr) override;
 
   private:
 	// shared helper: "(" + name + " " + each child's printed form + ")"
-	std::string parenthesize(const std::string &name, const std::vector<const Expr *> &children);
+	std::string parenthesize(const std::string &name,
+							 const std::vector<const Expr *> &children);
 };

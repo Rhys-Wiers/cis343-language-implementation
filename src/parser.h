@@ -1,6 +1,7 @@
 #pragma once
 
 #include "expression.h"
+#include "statement.h"
 #include "token.h"
 #include <initializer_list>
 #include <iostream>
@@ -120,11 +121,11 @@ class Parser {
 	// primary -> true | false | nil | NUMBER | STRING | "(" expression ")"
 	ExprPtr primary() {
 		if (match({TokenType::False}))
-			return std::make_unique<LiteralExpr>(Literal{false});
+			return std::make_unique<LiteralExpr>(Value{false});
 		if (match({TokenType::True}))
-			return std::make_unique<LiteralExpr>(Literal{true});
+			return std::make_unique<LiteralExpr>(Value{true});
 		if (match({TokenType::Nil}))
-			return std::make_unique<LiteralExpr>(Literal{});
+			return std::make_unique<LiteralExpr>(Value{});
 
 		if (match({TokenType::Number, TokenType::String}))
 			return std::make_unique<LiteralExpr>(previous().literal);

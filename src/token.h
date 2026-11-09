@@ -1,4 +1,5 @@
 #pragma once
+#include "value.h"
 #include <string>
 #include <variant>
 
@@ -54,9 +55,8 @@ using Literal = std::variant<std::monostate, double, std::string, bool>;
 struct Token {
 	TokenType type;
 	std::string lexeme;
-	Literal literal;
+	Value literal;
 	int line;
 };
 
 std::string to_string(TokenType type);
-std::string to_string(const Literal &literal);

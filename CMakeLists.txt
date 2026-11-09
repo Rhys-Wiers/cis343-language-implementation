@@ -11,6 +11,8 @@ add_executable(hashbrown
     src/token.cpp
     src/error.cpp
     src/ast-printer.cpp
+    src/evaluator.cpp
+    src/value.cpp
 )
 
 target_include_directories(hashbrown PRIVATE src)

@@ -80,22 +80,3 @@ std::string to_string(TokenType type) {
 
 	return "";
 }
-
-// begin AI code
-std::string to_string(const Literal &literal) {
-	if (std::holds_alternative<double>(literal)) {
-		std::ostringstream out;
-		out << std::setprecision(15) << std::get<double>(literal);
-		std::string text = out.str();
-		// print 3 as 3.0, but leave 3.14 and 1e+21 alone
-		if (text.find_first_of(".eEni") == std::string::npos) {
-			text += ".0";
-		}
-		return text;
-	}
-	if (std::holds_alternative<std::string>(literal)) {
-		return std::get<std::string>(literal);
-	}
-	return "null";
-}
-// end AI code

@@ -1,14 +1,18 @@
 #include "ast-printer.h"
 #include "error.h"
+#include "evaluator.h"
 #include "parser.h"
 #include "scanner.h"
 #include "token.h"
+#include "value.h"
 #include <fstream>
 #include <iostream>
 #include <iterator>
 #include <string>
 #include <unistd.h>
 #include <vector>
+
+static Evaluator evaluator;
 
 void run(std::string &source) {
 	Scanner scanner(source);
@@ -17,7 +21,13 @@ void run(std::string &source) {
 	ExprPtr expr = parser.parse();
 	if (parser.had_error() || !expr)
 		return;
-	std::cout << AstPrinter().print(*expr) << '\n';
+
+	try {
+		Value result = evaluator.evaluate(*expr);
+		std::cout << to_string(result) << '\n';
+	} catch (const RuntimeError &error) {
+		std::cerr << "[line " << error.op_.line << "] " << error.what() << '\n';
+	}
 
 	/* for (const Token &token : tokens) {
 		std::cout << to_string(token.type) << " " << token.lexeme << " "
@@ -45,7 +55,15 @@ int run_file(char *file) {
 	ExprPtr expr = parser.parse();
 	if (parser.had_error() || !expr)
 		return 1;
-	std::cout << AstPrinter().print(*expr) << '\n';
+
+	try {
+		Value result = evaluator.evaluate(*expr);
+		std::cout << to_string(result) << '\n';
+	} catch (const RuntimeError &error) {
+		std::cerr << "[line " << error.op_.line << "] " << error.what() << '\n';
+		return 70;
+	}
+
 	/*
 	std::vector<Token> tokens = scanner.scan_tokens();
 	for (const Token &token : tokens) {

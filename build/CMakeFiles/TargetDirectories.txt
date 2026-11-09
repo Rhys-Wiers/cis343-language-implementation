@@ -1,3 +1,0 @@
-/home/rhys/desktop/school/cis343/hashbrown-implementation/build/CMakeFiles/hashbrown.dir
-/home/rhys/desktop/school/cis343/hashbrown-implementation/build/CMakeFiles/edit_cache.dir
-/home/rhys/desktop/school/cis343/hashbrown-implementation/build/CMakeFiles/rebuild_cache.dir
