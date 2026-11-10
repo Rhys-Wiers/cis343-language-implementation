@@ -1,0 +1,102 @@
+\documentclass[12pt]{article} 
+
+\usepackage{amsmath,amsthm,amssymb,hyperref}
+\usepackage{geometry}
+\usepackage{verbatim}
+\usepackage{minted}
+\setminted{
+  fontsize=\small,
+  linenos,
+  breaklines,
+  frame=lines,
+  bgcolor=codebg,
+  style=friendly
+}
+
+\usepackage{xcolor}
+\definecolor{codebg}{HTML}{F7F7F7}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue}
+    
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{conjecture}{Conjecture}
+\newtheorem*{lemma`}{Lemma}
+\newtheorem*{corollary}{Corollary}
+\newtheorem*{proposition}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem*{defn}{Definition}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\term}[1]{\texttt{"#1"}}
+\newcommand{\nt}[1]{\text{#1}}
+
+% --- Main Document Body ---
+\begin{document}
+    \noindent
+    Rhys Wiers\\
+    CIS 343\\
+    Dr. Haoyu Li\\
+    \today
+
+    \begin{center}
+        {\Large \textbf{Lab 4: Statements}}
+    \end{center}
+
+    \begin{enumerate}
+        \item \textbf{Implementation:}
+            This lab implements statements in the hashbrown programming language. Currently supported statements are expression statements (which are evaluated and discarded) and print statements (which are evaluated and printed).
+
+        \item \textbf{Test Cases:}
+            To run the test cases, navigate to the root directory, run cmake to ensure everything is compiled:
+            \begin{minted}{bash}
+cmake -B build
+cmake --build build
+            \end{minted}
+                   
+            Then run the bash script from the root directory:
+            \begin{minted}{bash}
+./test/lab4/run-tests.sh
+            \end{minted}
+
+            The test cases are listed below, and all passed on my machine:
+            \begin{minted}{bash}
+> example1.hbn
+"one"
+true;
+print 2 +
+
+> example2.hbn
+4 + 2;
+print "one";
+print true;
+print 1 + 2;
+print nil;
+
+> test1.hbn
+print 10.0 % 3.0 + 2.0 * 4.0;
+print "hello" + " " + "world";
+print nil;
+
+> test2.hbn
+print 0.0 == false;
+print 1.0 == true;
+print 2.5 == true;
+print !("hello" == "world") == (0.0 == false) && (10.0 % 3.0 + 2.0 * 4.0 <= 9.0);
+
+> test3.hbn
+10 + 20;
+"discarded string expression";
+print "only this line should print";
+            \end{minted}
+    \end{enumerate}
+
+\end{document}
