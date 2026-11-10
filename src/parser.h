@@ -5,26 +5,27 @@
 #include "token.h"
 #include <initializer_list>
 #include <iostream>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
 
-// recursive descent parser: tokens -> expression tree
+// recursive descent parser
 class Parser {
   public:
 	explicit Parser(std::vector<Token> tokens) : tokens_(std::move(tokens)) {}
 
-	// Returns nullptr when there is an error
-	ExprPtr parse() {
-		try {
-			ExprPtr expr = expression();
-			if (!is_at_end())
-				throw error(peek(), "Expected end of expression.");
-			return expr;
-		} catch (const ParseError &) {
-			return nullptr;
+	// parses until EOF
+	std::vector<StmtPtr> parse() {
+		std::vector<StmtPtr> statements;
+		while (!is_at_end()) {
+			StmtPtr stmt = statement();
+			if (stmt != nullptr) {
+				statements.push_back(std::move(stmt));
+			}
 		}
+		return statements;
 	}
 	bool had_error() const { return had_error_; }
 
@@ -37,6 +38,31 @@ class Parser {
 	std::vector<Token> tokens_;
 	size_t current_ = 0; // next token to consume
 	bool had_error_ = false;
+
+	// statement rules
+	StmtPtr statement() {
+		try {
+			if (match({TokenType::Print})) {
+				return print_statement();
+			}
+			return expression_statement();
+		} catch (const ParseError &) {
+			synchronize();
+			return nullptr;
+		}
+	}
+
+	StmtPtr print_statement() {
+		ExprPtr value = expression();
+		consume(TokenType::SemiColon, "Expected ';' after value.");
+		return std::make_unique<PrintStmt>(std::move(value));
+	}
+
+	StmtPtr expression_statement() {
+		ExprPtr expr = expression();
+		consume(TokenType::SemiColon, "Expected ';' after expression");
+		return std::make_unique<ExpressionStmt>(std::move(expr));
+	}
 
 	// grammar rules, in order of precedence
 	ExprPtr expression() { return logic_or(); }
@@ -139,7 +165,37 @@ class Parser {
 		throw error(peek(), "Expected expression.");
 	}
 
-	// ---------------- Helpers ----------------
+	// ---------------- Helpers  error recovery ----------------
+
+	void synchronize() {
+		advance();
+
+		while (!is_at_end()) {
+			if (previous().type == TokenType::SemiColon)
+				return;
+
+			if (peek().type == TokenType::Class) {
+				return;
+			} else if (peek().type == TokenType::Class) {
+				return;
+			} else if (peek().type == TokenType::Fun) {
+				return;
+			} else if (peek().type == TokenType::Var) {
+				return;
+			} else if (peek().type == TokenType::For) {
+				return;
+			} else if (peek().type == TokenType::If) {
+				return;
+			} else if (peek().type == TokenType::While) {
+				return;
+			} else if (peek().type == TokenType::Print) {
+				return;
+			} else if (peek().type == TokenType::Return) {
+				return;
+			}
+			advance();
+		}
+	}
 
 	// check if the next token is a specified token
 	// consumes it if so

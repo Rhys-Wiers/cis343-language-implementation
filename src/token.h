@@ -46,6 +46,9 @@ enum class TokenType {
 	Return,
 	True,
 	While,
+	Print,
+	Fun,
+	Var,
 
 	EoF
 };

@@ -1,8 +1,11 @@
 #pragma once
+
 #include "expression.h"
+#include "statement.h"
 #include "token.h"
 #include "value.h"
 #include <cmath>
+#include <iostream>
 #include <stdexcept>
 #include <variant>
 
@@ -13,8 +16,28 @@ class RuntimeError : public std::runtime_error {
 	Token op_;
 };
 
-class Evaluator : public Visitor {
+class Evaluator : public Visitor, public StmtVisitor {
   public:
+	// ---------------- Statement Evaluation ----------------
+
+	// Entry point for statements (returns void)
+	void evaluate(const Stmt &stmt) {
+		stmt.accept(*this);
+	}
+
+	void visit_expression_stmt(const ExpressionStmt &stmt) override {
+		// Evaluate expression for side effects, discard returned Value
+		evaluate(*stmt.expression);
+	}
+
+	void visit_print_stmt(const PrintStmt &stmt) override {
+		Value value = evaluate(*stmt.expression);
+		std::cout << to_string(value) << '\n';
+	}
+
+	// ---------------- Expression Evaluation ----------------
+
+	// Entry point for expressions (returns Value)
 	Value evaluate(const Expr &expr) {
 		return expr.accept(*this);
 	}

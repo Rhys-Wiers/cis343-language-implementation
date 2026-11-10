@@ -74,6 +74,12 @@ std::string to_string(TokenType type) {
 		return "TRUE";
 	case TokenType::While:
 		return "WHILE";
+	case TokenType::Fun:
+		return "FUN";
+	case TokenType::Var:
+		return "VAR";
+	case TokenType::Print:
+		return "PRINT";
 	case TokenType::EoF:
 		return "EOF";
 	}

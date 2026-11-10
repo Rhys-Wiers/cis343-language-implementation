@@ -40,7 +40,7 @@ class PrintStmt : public Stmt {
 
 	void accept(StmtVisitor &visitor) const override;
 
-	std::unique_ptr<Expr> expression;
+	ExprPtr expression;
 };
 
 inline void ExpressionStmt::accept(StmtVisitor &visitor) const {

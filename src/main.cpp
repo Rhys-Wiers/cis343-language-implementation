@@ -18,13 +18,16 @@ void run(std::string &source) {
 	Scanner scanner(source);
 
 	Parser parser(scanner.scan_tokens());
-	ExprPtr expr = parser.parse();
-	if (parser.had_error() || !expr)
+	std::vector<StmtPtr> statements = parser.parse();
+	if (parser.had_error())
 		return;
 
 	try {
-		Value result = evaluator.evaluate(*expr);
-		std::cout << to_string(result) << '\n';
+		for (const auto &stmt : statements) {
+			if (stmt) {
+				evaluator.evaluate(*stmt);
+			}
+		}
 	} catch (const RuntimeError &error) {
 		std::cerr << "[line " << error.op_.line << "] " << error.what() << '\n';
 	}
@@ -52,13 +55,18 @@ int run_file(char *file) {
 
 	Scanner scanner(content);
 	Parser parser(scanner.scan_tokens());
-	ExprPtr expr = parser.parse();
-	if (parser.had_error() || !expr)
-		return 1;
+	std::vector<StmtPtr> statements = parser.parse();
+	if (parser.had_error()) {
+		my_file.close();
+		return 65;
+	}
 
 	try {
-		Value result = evaluator.evaluate(*expr);
-		std::cout << to_string(result) << '\n';
+		for (const auto &stmt : statements) {
+			if (stmt) {
+				evaluator.evaluate(*stmt);
+			}
+		}
 	} catch (const RuntimeError &error) {
 		std::cerr << "[line " << error.op_.line << "] " << error.what() << '\n';
 		return 70;

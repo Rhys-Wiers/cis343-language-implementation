@@ -1,7 +1,6 @@
 #include "value.h"
 #include <iomanip>
 #include <sstream>
-#include <typeinfo>
 #include <variant>
 
 bool is_truthy(const Value &val) {
@@ -59,11 +58,13 @@ std::string to_string(const Value &val) {
 		out << std::setprecision(15) << *d;
 		std::string text = out.str();
 
+		//------------ begin AI code ---------------
 		// If the formatted string does not contain a decimal point,
 		// exponent ('e'/'E'), 'nan', or 'inf', append ".0"
 		if (text.find_first_of(".eEni") == std::string::npos) {
 			text += ".0";
 		}
+		//------------ end AI code ---------------
 		return text;
 	}
 	if (auto *s = std::get_if<std::string>(&val)) {
