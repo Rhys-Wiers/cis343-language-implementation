@@ -1,9 +1,9 @@
 #pragma once
+
 #include "expression.h"
-#include "value.h"
 #include <memory>
 
-// Forward declare visitor
+// Forward declarations
 class Stmt;
 class ExpressionStmt;
 class PrintStmt;
@@ -25,28 +25,18 @@ class Stmt {
 
 class ExpressionStmt : public Stmt {
   public:
-	explicit ExpressionStmt(std::unique_ptr<Expr> expression)
-		: expression(std::move(expression)) {}
-
-	void accept(StmtVisitor &visitor) const override;
-
-	std::unique_ptr<Expr> expression;
-};
-
-class PrintStmt : public Stmt {
-  public:
-	explicit PrintStmt(std::unique_ptr<Expr> expression)
-		: expression(std::move(expression)) {}
+	explicit ExpressionStmt(ExprPtr expression);
 
 	void accept(StmtVisitor &visitor) const override;
 
 	ExprPtr expression;
 };
 
-inline void ExpressionStmt::accept(StmtVisitor &visitor) const {
-	visitor.visit_expression_stmt(*this);
-}
+class PrintStmt : public Stmt {
+  public:
+	explicit PrintStmt(ExprPtr expression);
 
-inline void PrintStmt::accept(StmtVisitor &visitor) const {
-	visitor.visit_print_stmt(*this);
-}
+	void accept(StmtVisitor &visitor) const override;
+
+	ExprPtr expression;
+};

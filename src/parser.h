@@ -3,31 +3,20 @@
 #include "expression.h"
 #include "statement.h"
 #include "token.h"
+#include <cstddef>
 #include <initializer_list>
-#include <iostream>
-#include <memory>
 #include <stdexcept>
 #include <string>
-#include <utility>
 #include <vector>
 
 // recursive descent parser
 class Parser {
   public:
-	explicit Parser(std::vector<Token> tokens) : tokens_(std::move(tokens)) {}
+	explicit Parser(std::vector<Token> tokens);
 
 	// parses until EOF
-	std::vector<StmtPtr> parse() {
-		std::vector<StmtPtr> statements;
-		while (!is_at_end()) {
-			StmtPtr stmt = statement();
-			if (stmt != nullptr) {
-				statements.push_back(std::move(stmt));
-			}
-		}
-		return statements;
-	}
-	bool had_error() const { return had_error_; }
+	std::vector<StmtPtr> parse();
+	bool had_error() const;
 
   private:
 	// define parse error type, with same behavior as runtime error type
@@ -36,213 +25,33 @@ class Parser {
 	};
 
 	std::vector<Token> tokens_;
-	size_t current_ = 0; // next token to consume
+	std::size_t current_ = 0; // next token to consume
 	bool had_error_ = false;
 
 	// statement rules
-	StmtPtr statement() {
-		try {
-			if (match({TokenType::Print})) {
-				return print_statement();
-			}
-			return expression_statement();
-		} catch (const ParseError &) {
-			synchronize();
-			return nullptr;
-		}
-	}
-
-	StmtPtr print_statement() {
-		ExprPtr value = expression();
-		consume(TokenType::SemiColon, "Expected ';' after value.");
-		return std::make_unique<PrintStmt>(std::move(value));
-	}
-
-	StmtPtr expression_statement() {
-		ExprPtr expr = expression();
-		consume(TokenType::SemiColon, "Expected ';' after expression");
-		return std::make_unique<ExpressionStmt>(std::move(expr));
-	}
+	StmtPtr statement();
+	StmtPtr print_statement();
+	StmtPtr expression_statement();
 
 	// grammar rules, in order of precedence
-	ExprPtr expression() { return logic_or(); }
+	ExprPtr expression();
+	ExprPtr logic_or();
+	ExprPtr logic_and();
+	ExprPtr equality();
+	ExprPtr comparison();
+	ExprPtr term();
+	ExprPtr factor();
+	ExprPtr unary();
+	ExprPtr primary();
 
-	// logic_or -> logic_and ( "||" logic_and )*
-	ExprPtr logic_or() {
-		ExprPtr expr = logic_and();
-		while (match({TokenType::Verts})) { // ||
-			Token op = previous();
-			ExprPtr right = logic_and();
-			expr = std::make_unique<BinaryExpr>(std::move(expr), op, std::move(right));
-		}
-		return expr;
-	}
-
-	// logic_and -> equality ( "&&" equality )*
-	ExprPtr logic_and() {
-		ExprPtr expr = equality();
-		while (match({TokenType::Ampersands})) { // &&
-			Token op = previous();
-			ExprPtr right = equality();
-			expr = std::make_unique<BinaryExpr>(std::move(expr), op, std::move(right));
-		}
-		return expr;
-	}
-
-	// equality -> comparison ( ( "!=" | "==" ) comparison )*
-	ExprPtr equality() {
-		ExprPtr expr = comparison();
-		while (match({TokenType::BangEqual, TokenType::EqualEqual})) {
-			Token op = previous();
-			ExprPtr right = comparison();
-			expr = std::make_unique<BinaryExpr>(std::move(expr), op, std::move(right));
-		}
-		return expr;
-	}
-
-	// comparison -> term ( ( ">" | ">=" | "<" | "<=" ) term )*
-	ExprPtr comparison() {
-		ExprPtr expr = term();
-		while (match({TokenType::Greater, TokenType::GreaterEqual, TokenType::Less, TokenType::LessEqual})) {
-			Token op = previous();
-			ExprPtr right = term();
-			expr = std::make_unique<BinaryExpr>(std::move(expr), op, std::move(right));
-		}
-		return expr;
-	}
-
-	// term -> factor ( ( "-" | "+" ) factor )*
-	ExprPtr term() {
-		ExprPtr expr = factor();
-		while (match({TokenType::Minus, TokenType::Plus})) {
-			Token op = previous();
-			ExprPtr right = factor();
-			expr = std::make_unique<BinaryExpr>(std::move(expr), op, std::move(right));
-		}
-		return expr;
-	}
-
-	// factor -> unary ( ( "/" | "*" | "%" ) unary )*
-	ExprPtr factor() {
-		ExprPtr expr = unary();
-		while (
-			match({TokenType::Slash, TokenType::Star, TokenType::Remainder})) {
-			Token op = previous();
-			ExprPtr right = unary();
-			expr = std::make_unique<BinaryExpr>(std::move(expr), op, std::move(right));
-		}
-		return expr;
-	}
-
-	// unary -> ( "!" | "-" ) unary | primary
-	ExprPtr unary() {
-		if (match({TokenType::Bang, TokenType::Minus})) {
-			Token op = previous();
-			ExprPtr right = unary();
-			return std::make_unique<UnaryExpr>(op, std::move(right));
-		}
-		return primary();
-	}
-
-	// primary -> true | false | nil | NUMBER | STRING | "(" expression ")"
-	ExprPtr primary() {
-		if (match({TokenType::False}))
-			return std::make_unique<LiteralExpr>(Value{false});
-		if (match({TokenType::True}))
-			return std::make_unique<LiteralExpr>(Value{true});
-		if (match({TokenType::Nil}))
-			return std::make_unique<LiteralExpr>(Value{});
-
-		if (match({TokenType::Number, TokenType::String}))
-			return std::make_unique<LiteralExpr>(previous().literal);
-
-		if (match({TokenType::LeftParen})) {
-			ExprPtr expr = expression();
-			consume(TokenType::RightParen, "Expected ')' after expression.");
-			return std::make_unique<GroupingExpr>(std::move(expr));
-		}
-
-		throw error(peek(), "Expected expression.");
-	}
-
-	// ---------------- Helpers  error recovery ----------------
-
-	void synchronize() {
-		advance();
-
-		while (!is_at_end()) {
-			if (previous().type == TokenType::SemiColon)
-				return;
-
-			if (peek().type == TokenType::Class) {
-				return;
-			} else if (peek().type == TokenType::Class) {
-				return;
-			} else if (peek().type == TokenType::Fun) {
-				return;
-			} else if (peek().type == TokenType::Var) {
-				return;
-			} else if (peek().type == TokenType::For) {
-				return;
-			} else if (peek().type == TokenType::If) {
-				return;
-			} else if (peek().type == TokenType::While) {
-				return;
-			} else if (peek().type == TokenType::Print) {
-				return;
-			} else if (peek().type == TokenType::Return) {
-				return;
-			}
-			advance();
-		}
-	}
-
-	// check if the next token is a specified token
-	// consumes it if so
-	bool match(std::initializer_list<TokenType> types) {
-		for (TokenType type : types) {
-			if (check(type)) {
-				advance();
-				return true;
-			}
-		}
-		return false;
-	}
-
-	// consume next token
-	// throws if it isn't the expected type
-	const Token &consume(TokenType type, const std::string &message) {
-		if (check(type))
-			return advance();
-		throw error(peek(), message);
-	}
-
-	// check if we are at the end and return type of next token if not
-	bool check(TokenType type) const {
-		if (is_at_end())
-			return false;
-		return peek().type == type;
-	}
-
-	// if we aren't at the end then increment current
-	const Token &advance() {
-		if (!is_at_end())
-			current_++;
-		return previous();
-	}
-
-	bool is_at_end() const { return peek().type == TokenType::EoF; }
-	const Token &peek() const { return tokens_[current_]; }
-	const Token &previous() const { return tokens_[current_ - 1]; }
-
-	// errors for things that went wrong
-	// prints the message and returns the exception for the caller to throw
-	ParseError error(const Token &token, const std::string &message) {
-		had_error_ = true;
-		if (token.type == TokenType::EoF)
-			std::cerr << "[line " << token.line << "] Error at end: " << message << "\n";
-		else
-			std::cerr << "[line " << token.line << "] Error at '" << token.lexeme << "': " << message << "\n";
-		return ParseError(message);
-	}
+	// helpers & error recovery
+	void synchronize();
+	bool match(std::initializer_list<TokenType> types);
+	const Token &consume(TokenType type, const std::string &message);
+	bool check(TokenType type) const;
+	const Token &advance();
+	bool is_at_end() const;
+	const Token &peek() const;
+	const Token &previous() const;
+	ParseError error(const Token &token, const std::string &message);
 };

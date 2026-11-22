@@ -1,9 +1,8 @@
 #pragma once
+
 #include "token.h"
 #include "value.h"
 #include <memory>
-#include <string>
-#include <utility>
 
 struct BinaryExpr;
 struct UnaryExpr;
@@ -29,33 +28,25 @@ struct BinaryExpr : Expr {
 	ExprPtr left;
 	Token op;
 	ExprPtr right;
-	BinaryExpr(ExprPtr l, Token o, ExprPtr r) : left(std::move(l)), op(std::move(o)), right(std::move(r)) {}
-	Value accept(Visitor &v) const override {
-		return v.visit_binary(*this);
-	}
+	BinaryExpr(ExprPtr l, Token o, ExprPtr r);
+	Value accept(Visitor &v) const override;
 };
 
 struct UnaryExpr : Expr {
 	Token op;
 	ExprPtr right;
-	UnaryExpr(Token o, ExprPtr r) : op(std::move(o)), right(std::move(r)) {}
-	Value accept(Visitor &v) const override {
-		return v.visit_unary(*this);
-	}
+	UnaryExpr(Token o, ExprPtr r);
+	Value accept(Visitor &v) const override;
 };
 
 struct LiteralExpr : Expr {
 	Value val;
-	explicit LiteralExpr(Literal v) : val(std::move(v)) {}
-	Value accept(Visitor &v) const override {
-		return v.visit_literal(*this);
-	}
+	explicit LiteralExpr(Literal v);
+	Value accept(Visitor &v) const override;
 };
 
 struct GroupingExpr : Expr {
 	ExprPtr expr;
-	explicit GroupingExpr(ExprPtr e) : expr(std::move(e)) {}
-	Value accept(Visitor &v) const override {
-		return v.visit_grouping(*this);
-	}
+	explicit GroupingExpr(ExprPtr e);
+	Value accept(Visitor &v) const override;
 };
