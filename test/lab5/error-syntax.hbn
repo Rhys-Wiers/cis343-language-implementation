@@ -1,0 +1,14 @@
+# begin AI code
+# 1. Missing variable name
+var = 10;
+
+# 2. Invalid assignment target (l-value check)
+var a = 1;
+var b = 2;
+a + b = 3;
+
+# 3. Unclosed block brace
+{
+  var x = 5;
+  print x;
+# end AI code

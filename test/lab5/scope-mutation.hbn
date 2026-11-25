@@ -1,0 +1,10 @@
+# begin AI code
+var x = "global";
+{
+  x = "modified in block";
+  var y = "local only";
+  print x; # modified in block
+  print y; # local only
+}
+print x; # modified in block
+# end AI code

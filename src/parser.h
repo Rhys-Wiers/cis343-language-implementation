@@ -29,12 +29,16 @@ class Parser {
 	bool had_error_ = false;
 
 	// statement rules
+	StmtPtr declaration();
 	StmtPtr statement();
 	StmtPtr print_statement();
 	StmtPtr expression_statement();
+	StmtPtr var_declaration();
+	std::vector<StmtPtr> block();
 
 	// grammar rules, in order of precedence
 	ExprPtr expression();
+	ExprPtr assignment();
 	ExprPtr logic_or();
 	ExprPtr logic_and();
 	ExprPtr equality();

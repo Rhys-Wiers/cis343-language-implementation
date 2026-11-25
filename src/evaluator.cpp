@@ -1,6 +1,9 @@
 #include "evaluator.h"
 #include <cmath>
 #include <iostream>
+#include <memory>
+#include <mutex>
+#include <utility>
 #include <variant>
 
 RuntimeError::RuntimeError(const Token &op, const std::string &message)
@@ -20,6 +23,19 @@ void Evaluator::visit_expression_stmt(const ExpressionStmt &stmt) {
 void Evaluator::visit_print_stmt(const PrintStmt &stmt) {
 	Value value = evaluate(*stmt.expression);
 	std::cout << to_string(value) << '\n';
+}
+
+void Evaluator::visit_var_stmt(const VariableStmt &stmt) {
+	Value value = std::monostate{};
+	if (stmt.initializer != nullptr) {
+		value = evaluate(*stmt.initializer);
+	}
+
+	env_->define(stmt.name.lexeme, std::move(value));
+}
+
+void Evaluator::visit_block(const Block &stmt) {
+	execute_block(stmt.statements, std::make_shared<Environment>(env_));
 }
 
 // ---------------- Expression Evaluation ----------------
@@ -102,6 +118,15 @@ Value Evaluator::visit_binary(const BinaryExpr &expr) {
 	return std::monostate{};
 }
 
+Value Evaluator::visit_variable(const VariableExpr &expr) {
+	return env_->get(expr.name);
+}
+
+Value Evaluator::visit_assign(const AssignExpr &expr) {
+	Value value = evaluate(*expr.value);
+	env_->assign(expr.name, value);
+	return value;
+}
 // ---------------- Helpers ----------------
 
 void Evaluator::check_number_operand(const Token &op, const Value &operand) {
@@ -114,4 +139,20 @@ void Evaluator::check_number_operands(const Token &op, const Value &left, const 
 	if (std::holds_alternative<double>(left) && std::holds_alternative<double>(right))
 		return;
 	throw RuntimeError(op, "Operands must be numbers.");
+}
+
+void Evaluator::execute_block(const std::vector<std::unique_ptr<Stmt>> &statements, std::shared_ptr<Environment> block_env) {
+	std::shared_ptr<Environment> previous = this->env_;
+	try {
+		this->env_ = std::move(block_env);
+		for (const auto &statement : statements) {
+			if (statement != nullptr) {
+				evaluate(*statement);
+			}
+		}
+	} catch (...) {
+		this->env_ = previous;
+		throw;
+	}
+	this->env_ = previous;
 }

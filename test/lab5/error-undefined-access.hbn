@@ -1,0 +1,6 @@
+# begin AI code
+{
+  var inside = 42;
+}
+print inside;
+# end AI code

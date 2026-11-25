@@ -1,0 +1,14 @@
+# begin AI code
+var a = 1;
+var b = 2;
+a = 10;
+print a; # Expected: 10
+
+# Chained assignment (evaluates right-to-left)
+a = b = 42;
+print a; # Expected: 42
+print b; # Expected: 42
+
+# Assignment expression value
+print (a = 99); # Expected: 99
+# end AI code

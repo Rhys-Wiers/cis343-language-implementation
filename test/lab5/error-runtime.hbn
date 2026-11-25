@@ -1,0 +1,13 @@
+# begin AI code
+# 1. Accessing an undeclared variable
+print undefined_var;
+
+# 2. Assigning to an undeclared variable
+undeclared_var = 123;
+
+# 3. Accessing a block-scoped variable outside its block
+{
+  var local_only = "secret";
+}
+print local_only;
+# end AI code

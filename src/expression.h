@@ -8,6 +8,8 @@ struct BinaryExpr;
 struct UnaryExpr;
 struct LiteralExpr;
 struct GroupingExpr;
+struct VariableExpr;
+struct AssignExpr;
 
 struct Visitor {
 	virtual ~Visitor() = default;
@@ -15,6 +17,8 @@ struct Visitor {
 	virtual Value visit_unary(const UnaryExpr &expr) = 0;
 	virtual Value visit_literal(const LiteralExpr &expr) = 0;
 	virtual Value visit_grouping(const GroupingExpr &expr) = 0;
+	virtual Value visit_variable(const VariableExpr &expr) = 0;
+	virtual Value visit_assign(const AssignExpr &expr) = 0;
 };
 
 struct Expr {
@@ -23,6 +27,19 @@ struct Expr {
 };
 
 using ExprPtr = std::unique_ptr<Expr>;
+
+struct VariableExpr : Expr {
+	Token name;
+	VariableExpr(Token n);
+	Value accept(Visitor &v) const override;
+};
+
+struct AssignExpr : Expr {
+	Token name;
+	ExprPtr value;
+	AssignExpr(Token n, ExprPtr v);
+	Value accept(Visitor &v) const override;
+};
 
 struct BinaryExpr : Expr {
 	ExprPtr left;

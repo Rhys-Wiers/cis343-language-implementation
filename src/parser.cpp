@@ -1,6 +1,10 @@
 #include "parser.h"
+#include "expression.h"
+#include "statement.h"
+#include "token.h"
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <utility>
 
 Parser::Parser(std::vector<Token> tokens) : tokens_(std::move(tokens)) {}
@@ -8,7 +12,7 @@ Parser::Parser(std::vector<Token> tokens) : tokens_(std::move(tokens)) {}
 std::vector<StmtPtr> Parser::parse() {
 	std::vector<StmtPtr> statements;
 	while (!is_at_end()) {
-		StmtPtr stmt = statement();
+		StmtPtr stmt = declaration();
 		if (stmt != nullptr) {
 			statements.push_back(std::move(stmt));
 		}
@@ -22,10 +26,24 @@ bool Parser::had_error() const {
 
 // ---------------- Statement Rules ----------------
 
+StmtPtr Parser::declaration() {
+	try {
+		if (match({TokenType::Var})) {
+			return var_declaration();
+		}
+		return statement();
+	} catch (const ParseError &) {
+		synchronize();
+		return nullptr;
+	}
+}
+
 StmtPtr Parser::statement() {
 	try {
 		if (match({TokenType::Print})) {
 			return print_statement();
+		} else if (match({TokenType::LeftBrace})) {
+			return std::make_unique<Block>(block());
 		}
 		return expression_statement();
 	} catch (const ParseError &) {
@@ -46,10 +64,50 @@ StmtPtr Parser::expression_statement() {
 	return std::make_unique<ExpressionStmt>(std::move(expr));
 }
 
+StmtPtr Parser::var_declaration() {
+	Token name = consume(TokenType::Identifier, "Expected variable name.");
+
+	ExprPtr initializer = nullptr;
+	if (match({TokenType::Equal})) {
+		initializer = expression();
+	}
+
+	consume(TokenType::SemiColon, "Expected ';' after variable declaration.");
+	return std::make_unique<VariableStmt>(std::move(name), std::move(initializer));
+}
+
+std::vector<StmtPtr> Parser::block() {
+	std::vector<StmtPtr> statements;
+
+	while (!check(TokenType::RightBrace) && !is_at_end()) {
+		statements.push_back(declaration());
+	}
+
+	consume(TokenType::RightBrace, "Expected '}' after block.");
+	return statements;
+}
+
 // ---------------- Grammar Rules ----------------
 
 ExprPtr Parser::expression() {
-	return logic_or();
+	return assignment();
+}
+
+ExprPtr Parser::assignment() {
+	ExprPtr expr = logic_or();
+	if (match({TokenType::Equal})) {
+		Token op = previous();
+		ExprPtr value = assignment();
+		// begin AI code
+		auto *var_expr = dynamic_cast<VariableExpr *>(expr.get());
+		// end AI code
+		if (var_expr) {
+			return std::make_unique<AssignExpr>(var_expr->name, std::move(value));
+		} else {
+			error(op, "Invalid variable assignment.");
+		}
+	}
+	return expr;
 }
 
 // logic_or -> logic_and ( "||" logic_and )*
@@ -146,6 +204,9 @@ ExprPtr Parser::primary() {
 		return std::make_unique<GroupingExpr>(std::move(expr));
 	}
 
+	if (match({TokenType::Identifier})) {
+		return std::make_unique<VariableExpr>(previous());
+	}
 	throw error(peek(), "Expected expression.");
 }
 

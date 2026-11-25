@@ -16,6 +16,7 @@ add_executable(hashbrown
     src/expression.cpp
     src/parser.cpp
     src/statement.cpp
+    src/environment.cpp
 )
 
 target_include_directories(hashbrown PRIVATE src)

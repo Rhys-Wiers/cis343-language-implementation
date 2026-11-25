@@ -71,15 +71,10 @@ int run_file(char *file) {
 		std::cerr << "[line " << error.op_.line << "] " << error.what() << '\n';
 		return 70;
 	}
-
-	/*
-	std::vector<Token> tokens = scanner.scan_tokens();
-	for (const Token &token : tokens) {
-		std::cout << to_string(token.type) << " " << token.lexeme << " "
-				  << to_string(token.literal) << "\n";
+	if (had_error() || parser.had_error()) {
+		my_file.close();
+		return 65;
 	}
-	*/
-
 	my_file.close();
 	return 0;
 }
@@ -112,10 +107,11 @@ int main(int argc, char *argv[]) {
 	if (argc == 1) {
 		enter_repl();
 	} else if (argc == 2) {
-		run_file(argv[1]);
+		return run_file(argv[1]);
 	} else if (argc > 2) {
 		std::cout << "Too many arguments. Only one file allowed at a time."
 				  << '\n';
+		return 64;
 	}
 	return 0;
 }

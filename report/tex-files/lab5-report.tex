@@ -1,0 +1,299 @@
+\documentclass[12pt]{article} 
+
+\usepackage{amsmath,amsthm,amssymb,hyperref}
+\usepackage{geometry}
+\usepackage{verbatim}
+\usepackage{minted}
+\setminted{
+  fontsize=\small,
+  linenos,
+  breaklines,
+  frame=lines,
+  bgcolor=codebg,
+  style=friendly
+}
+
+\usepackage{xcolor}
+\definecolor{codebg}{HTML}{F7F7F7}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue}
+    
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{conjecture}{Conjecture}
+\newtheorem*{lemma`}{Lemma}
+\newtheorem*{corollary}{Corollary}
+\newtheorem*{proposition}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem*{defn}{Definition}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\term}[1]{\texttt{"#1"}}
+\newcommand{\nt}[1]{\text{#1}}
+
+% --- Main Document Body ---
+\begin{document}
+    \noindent
+    Rhys Wiers\\
+    CIS 343\\
+    Dr. Haoyu Li\\
+    \today
+
+    \begin{center}
+        {\Large \textbf{Lab 4: Statements}}
+    \end{center}
+
+    \begin{enumerate}
+        \item \textbf{Declaration, assignment, access.}
+            My language uses the same syntax as lox for those three features, because I did not think of any way that I wanted to do it differently. I have included some code snippets below as examples of the syntax and output of my language:
+            \begin{minted}{bash}
+> cat test/lab5/declarations.hbn
+# begin AI code
+# Initialized declarations
+var a = 10;
+var b = 20;
+print a + b; # Expected: 30
+
+# Uninitialized declaration (nil)
+var uninit;
+print uninit; # Expected: nil
+
+# Redeclaration in the same scope (adjust if you chose to disallow this)
+var a = "redeclared";
+print a; # Expected: redeclared
+# end AI code
+
+> ./build/hashbrown test/lab5/declarations.hbn
+30.0
+nil
+redeclared
+
+> cat test/lab5/assignment.hbn
+# begin AI code
+var a = 1;
+var b = 2;
+a = 10;
+print a; # Expected: 10
+
+# Chained assignment (evaluates right-to-left)
+a = b = 42;
+print a; # Expected: 42
+print b; # Expected: 42
+
+# Assignment expression value
+print (a = 99); # Expected: 99
+# end AI code
+
+> ./build/hashbrown test/lab5/assignment.hbn
+10.0
+42.0
+42.0
+99.0
+            \end{minted}
+
+            For the test case given in the report instructions, I obtained the following output:
+            \begin{minted}{bash}
+inner a
+outer b
+global c
+outer a
+outer b
+global c
+global a
+global b
+global c
+            \end{minted}
+
+            This output is as shown above because when accessing a variable, the interpreter always checks the local scope first, then the parent of that scope, then the parent of that scope, etc. until it finds a variable that has been declared. That is why the first set of print statement gives inner a, outer b, global c, because those are the closest definitions of those variable names to the current scope. At the second set of prints, the inner variables are gone, so a prints as outer a while the others stay the same, then the last set is in the widest scope so only global a b c are printed.
+
+        \item \textbf{Test Cases:}
+            To run the test cases, navigate to the root directory, run cmake to ensure everything is compiled:
+            \begin{minted}{bash}
+cmake -B build
+cmake --build build
+            \end{minted}
+                   
+            Then run the bash script from the root directory:
+            \begin{minted}{bash}
+./test/lab5/run-tests.sh
+            \end{minted}
+
+            The test cases are listed below, and all passed on my machine:
+            \begin{minted}{bash}
+> test/lab5/assignment.hbn
+# begin AI code
+var a = 1;
+var b = 2;
+a = 10;
+print a; # Expected: 10
+
+# Chained assignment (evaluates right-to-left)
+a = b = 42;
+print a; # Expected: 42
+print b; # Expected: 42
+
+# Assignment expression value
+print (a = 99); # Expected: 99
+# end AI code
+
+> test/lab5/declarations.hbn
+# begin AI code
+# Initialized declarations
+var a = 10;
+var b = 20;
+print a + b; # Expected: 30
+
+# Uninitialized declaration (nil)
+var uninit;
+print uninit; # Expected: nil
+
+# Redeclaration in the same scope (adjust if you chose to disallow this)
+var a = "redeclared";
+print a; # Expected: redeclared
+# end AI code
+
+> test/lab5/error-invalid-target.hbn
+# begin AI code
+var a = 1;
+var b = 2;
+a + b = 3;
+# end AI code
+
+> test/lab5/error-runtime.hbn
+# begin AI code
+# 1. Accessing an undeclared variable
+print undefined_var;
+
+# 2. Assigning to an undeclared variable
+undeclared_var = 123;
+
+# 3. Accessing a block-scoped variable outside its block
+{
+  var local_only = "secret";
+}
+print local_only;
+# end AI code
+
+> test/lab5/error-syntax.hbn
+# begin AI code
+# 1. Missing variable name
+var = 10;
+
+# 2. Invalid assignment target (l-value check)
+var a = 1;
+var b = 2;
+a + b = 3;
+
+# 3. Unclosed block brace
+{
+  var x = 5;
+  print x;
+# end AI code
+
+> test/lab5/error-undefined-access.hbn
+# begin AI code
+{
+  var inside = 42;
+}
+print inside;
+# end AI code
+
+> test/lab5/error-undefined-assign.hbn
+# begin AI code
+not_declared = 10;
+# end AI code
+
+> test/lab5/error-unmatched-brace.hbn
+# begin AI code
+{
+  var a = 1;
+  print a;
+# end AI code
+
+> test/lab5/scope-mutation.hbn
+# begin AI code
+var x = "global";
+{
+  x = "modified in block";
+  var y = "local only";
+  print x; # modified in block
+  print y; # local only
+}
+print x; # modified in block
+# end AI code
+
+> test/lab5/scoping.hbn
+var a = "global a";
+var b = "global b";
+var c = "global c";
+{
+  var a = "outer a";
+  var b = "outer b";
+  {
+    var a = "inner a";
+    print a; # Expected: inner a
+    print b; # Expected: outer b
+    print c; # Expected: global c
+  }
+  print a; # Expected: outer a
+  print b; # Expected: outer b
+  print c; # Expected: global c
+}
+print a; # Expected: global a
+print b; # Expected: global b
+print c; # Expected: global c
+            \end{minted}
+
+        For the error test cases above, we obtain the following output:
+        \begin{minted}{bash}
+----------------------------------------
+Running: ./test/lab5/error-invalid-target.hbn
+----------------------------------------
+[line 4] Error at '=': Invalid variable assignment.
+[PASSED (Expected Error)] Exit code: 65
+
+----------------------------------------
+Running: ./test/lab5/error-runtime.hbn
+----------------------------------------
+[line 3] Unidentified variable 'undefined_var'.
+[PASSED (Expected Error)] Exit code: 70
+
+----------------------------------------
+Running: ./test/lab5/error-syntax.hbn
+----------------------------------------
+[line 3] Error at '=': Expected variable name.
+[line 8] Error at '=': Invalid variable assignment.
+[line 15] Error at end: Expected '}' after block.
+[PASSED (Expected Error)] Exit code: 65
+
+----------------------------------------
+Running: ./test/lab5/error-undefined-access.hbn
+----------------------------------------
+[line 5] Unidentified variable 'inside'.
+[PASSED (Expected Error)] Exit code: 70
+
+----------------------------------------
+Running: ./test/lab5/error-undefined-assign.hbn
+----------------------------------------
+[line 2] Unidentified variable 'not_declared'.
+[PASSED (Expected Error)] Exit code: 70
+
+----------------------------------------
+Running: ./test/lab5/error-unmatched-brace.hbn
+----------------------------------------
+[line 6] Error at end: Expected '}' after block.
+[PASSED (Expected Error)] Exit code: 65
+        \end{minted}
+
+        You can see all the new error messages there.
+    \end{enumerate}
+
+\end{document}

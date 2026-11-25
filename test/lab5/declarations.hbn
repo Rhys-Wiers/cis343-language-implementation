@@ -1,0 +1,14 @@
+# begin AI code
+# Initialized declarations
+var a = 10;
+var b = 20;
+print a + b; # Expected: 30
+
+# Uninitialized declaration (nil)
+var uninit;
+print uninit; # Expected: nil
+
+# Redeclaration in the same scope (adjust if you chose to disallow this)
+var a = "redeclared";
+print a; # Expected: redeclared
+# end AI code

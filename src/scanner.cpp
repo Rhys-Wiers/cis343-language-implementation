@@ -17,6 +17,7 @@ static std::unordered_map<std::string, TokenType> keywords = {
 	{"true", TokenType::True},
 	{"while", TokenType::While},
 	{"print", TokenType::Print},
+	{"var", TokenType::Var},
 };
 
 // Initialize scanner with the source that we are scanning
